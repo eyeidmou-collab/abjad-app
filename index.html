@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<!-- PWA : couleur barre système -->
+<meta name="theme-color" content="#0f172a">
+
+<!-- PWA : manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS : icône et comportement plein écran -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Abjad">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<!-- Splash screen iOS (optionnel) -->
+<meta name="mobile-web-app-capable" content="yes">
+
+<title>Calculateur Abjad</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+  /* Bannière d'installation */
+  #installBanner {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e3a5f;
+    border: 1px solid #3b82f6;
+    border-radius: 16px;
+    padding: 14px 20px;
+    z-index: 9999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    gap: 14px;
+    max-width: 380px;
+    width: calc(100% - 32px);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateX(-50%) translateY(20px); opacity:0; }
+    to   { transform: translateX(-50%) translateY(0);   opacity:1; }
+  }
+  #installBanner .install-icon { font-size: 28px; flex-shrink:0; }
+  #installBanner .install-text { flex:1; }
+  #installBanner .install-text strong { display:block; font-size:14px; color:#fff; margin-bottom:2px; }
+  #installBanner .install-text span { font-size:12px; color:#94a3b8; }
+  #installBanner .install-btn {
+    background: #3b82f6;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #installBanner .install-btn:hover { background: #2563eb; }
+  #installBanner .dismiss-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 4px;
+    flex-shrink: 0;
+  }
+
+  /* Indicateur offline */
+  #offlineBar {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #dc2626;
+    color: #fff;
+    text-align: center;
+    font-size: 13px;
+    padding: 6px;
+    z-index: 9998;
+  }
+</style>
+
+</head>
+<body>
+
+<!-- Barre hors-ligne -->
+<div id="offlineBar">📵 Vous êtes hors-ligne — l'application fonctionne quand même ✓</div>
+
+<!-- Bannière d'installation -->
+<div id="installBanner">
+  <div class="install-icon">📲</div>
+  <div class="install-text">
+    <strong>Installer l'application</strong>
+    <span>Accès rapide depuis votre écran d'accueil</span>
+  </div>
+  <button class="install-btn" id="installBtn">Installer</button>
+  <button class="dismiss-btn" id="dismissBtn">✕</button>
+</div>
+
+<div class="container">
+
+    <h1>Calculateur Abjad</h1>
+
+    <p class="subtitle">
+        Calcul Mashriqi et Maghribi
+    </p>
+
+    <div class="input-wrapper">
+
+        <textarea
+    id="inputText"
+    placeholder="اكتب النص هنا"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false">
+</textarea>
+
+       <button
+    type="button"
+    class="keyboard-btn"
+    id="toggleKeyboardBtn">
+
+    ⌨
+
+</button>
+
+    </div>
+
+    <div id="arabicKeyboard"
+         class="keyboard hidden">
+    </div>
+
+    <div class="mode-box">
+
+        <label>
+
+            <input
+                type="radio"
+                name="mode"
+                value="mashriqi"
+                checked>
+
+            Mashriqi
+
+        </label>
+
+        <label>
+
+            <input
+                type="radio"
+                name="mode"
+                value="maghribi">
+
+            Maghribi
+
+        </label>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Résultat</h2>
+
+        <div
+            id="totalValue"
+            class="result-number">
+
+            0
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+// =============================================
+// PWA — Service Worker + Install Prompt
+// =============================================
+
+// 1. Enregistrement du Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('./sw.js')
+      .then(reg => console.log('SW enregistré :', reg.scope))
+      .catch(err => console.warn('SW erreur :', err));
+  });
+}
+
+// 2. Bannière d'installation (Chrome/Android/Edge/Samsung)
+let deferredPrompt = null;
+const banner   = document.getElementById('installBanner');
+const installBtn = document.getElementById('installBtn');
+const dismissBtn = document.getElementById('dismissBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Affiche la bannière après 1 seconde
+  setTimeout(() => { banner.style.display = 'flex'; }, 1000);
+});
+
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  banner.style.display = 'none';
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log('Choix utilisateur :', outcome);
+  deferredPrompt = null;
+});
+
+dismissBtn.addEventListener('click', () => {
+  banner.style.display = 'none';
+});
+
+// 3. Masquer la bannière si déjà installée
+window.addEventListener('appinstalled', () => {
+  banner.style.display = 'none';
+  deferredPrompt = null;
+  console.log('Application installée !');
+});
+
+// 4. Indicateur offline / online
+const offlineBar = document.getElementById('offlineBar');
+function updateOnlineStatus() {
+  offlineBar.style.display = navigator.onLine ? 'none' : 'block';
+}
+window.addEventListener('online',  updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+</script>
+
+</body>
+</html>

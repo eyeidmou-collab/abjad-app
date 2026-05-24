@@ -1,0 +1,387 @@
+body{
+
+    margin:0;
+
+    background:#0f172a;
+
+    color:white;
+
+    font-family:Arial;
+}
+
+.container{
+
+    max-width:900px;
+
+    margin:auto;
+
+    padding:20px;
+}
+
+h1{
+
+    text-align:center;
+
+    font-size:42px;
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#cbd5e1;
+}
+
+.input-wrapper{
+
+    position:relative;
+}
+
+textarea{
+
+    width:100%;
+
+    height:170px;
+
+    margin-top:20px;
+
+    border:none;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    box-sizing:border-box;
+
+    font-size:24px;
+
+    background:#1e293b;
+
+    color:white;
+
+    resize:none;
+
+    direction:rtl;
+}
+
+.keyboard-btn{
+
+    position:absolute;
+
+    left:15px;
+
+    bottom:15px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#334155;
+
+    color:white;
+
+    padding:10px 14px;
+
+    font-size:22px;
+
+    cursor:pointer;
+}
+
+.keyboard{
+
+    background:#1e293b;
+
+    margin-top:15px;
+
+    padding:15px;
+
+    border-radius:18px;
+
+    direction:rtl;
+}
+
+.hidden{
+
+    display:none;
+}
+
+.keyboard-row{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin-bottom:10px;
+
+    flex-wrap:wrap;
+}
+
+.key{
+
+    width:50px;
+
+    height:50px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#334155;
+
+    color:white;
+
+    font-size:24px;
+
+    cursor:pointer;
+}
+
+.key:hover{
+
+    background:#475569;
+}
+
+.space-key{
+
+    width:160px;
+}
+
+.delete-key{
+
+    width:80px;
+
+    background:#dc2626;
+}
+
+.mode-box{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:30px;
+
+    margin-top:25px;
+}
+
+.mode-box label{
+
+    font-size:18px;
+
+    cursor:pointer;
+}
+
+.mode-box input{
+
+    margin-right:8px;
+}
+
+.calc-btn{
+
+    width:100%;
+
+    margin-top:25px;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#22c55e;
+
+    color:white;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+.calc-btn:hover{
+
+    background:#16a34a;
+}
+
+.card{
+
+    background:#1e293b;
+
+    margin-top:25px;
+
+    padding:25px;
+
+    border-radius:18px;
+}
+
+.card h2{
+
+    text-align:center;
+}
+
+.result-number{
+
+    text-align:center;
+
+    font-size:60px;
+
+    color:#22c55e;
+}
+/* ===== MOBILE ===== */
+
+@media (max-width:768px){
+
+    .container{
+
+        padding:12px;
+    }
+
+    h1{
+
+        font-size:32px;
+    }
+
+    .subtitle{
+
+        font-size:16px;
+    }
+
+    textarea{
+
+        height:150px;
+
+        font-size:26px;
+
+        padding:18px;
+    }
+
+    .keyboard{
+
+        padding:10px;
+    }
+
+    .keyboard-row{
+
+        gap:5px;
+
+        margin-bottom:6px;
+    }
+
+    .key{
+
+        width:42px;
+
+        height:42px;
+
+        font-size:22px;
+
+        border-radius:10px;
+    }
+
+    .space-key{
+
+        width:120px;
+    }
+
+    .delete-key{
+
+        width:65px;
+    }
+
+    .calc-btn{
+
+        padding:14px;
+
+        font-size:18px;
+    }
+
+    .result-number{
+
+        font-size:48px;
+    }
+
+    .mode-box{
+
+        gap:15px;
+
+        flex-wrap:wrap;
+    }
+
+}
+
+/* ===== PETITS MOBILES ===== */
+
+@media (max-width:480px){
+
+    h1{
+
+        font-size:26px;
+    }
+
+    textarea{
+
+        font-size:24px;
+    }
+
+    .key{
+
+        width:36px;
+
+        height:36px;
+
+        font-size:18px;
+    }
+
+    .space-key{
+
+        width:90px;
+    }
+
+    .delete-key{
+
+        width:55px;
+    }
+
+    .keyboard-btn{
+
+        padding:8px 10px;
+
+        font-size:18px;
+    }
+
+    .result-number{
+
+        font-size:40px;
+    }
+
+}
+
+/* ===== AMÉLIORATION TACTILE ===== */
+
+button,
+.key,
+.keyboard-btn,
+.calc-btn{
+
+    touch-action:manipulation;
+}
+
+/* empêche le zoom iPhone */
+
+textarea,
+button,
+input{
+
+    font-size:16px;
+}
+.keyboard-btn{
+
+    z-index:1000;
+}
+
+.keyboard{
+
+    position:relative;
+
+    z-index:999;
+}
